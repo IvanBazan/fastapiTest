@@ -1,16 +1,13 @@
-# This is a sample Python script.
+from fastapi import FastAPI, Query
+from schemas import Book
+from typing import List
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+app = FastAPI()
 
+@app.post('/book')
+def create_book(item: Book):
+    return item
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+@app.get('/book')
+def get_book(q: List[str] = Query(..., description="Search book")):
+    return q
