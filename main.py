@@ -1,26 +1,41 @@
-from fastapi import FastAPI, Query
-from schemas import Book
-from typing import List
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 
 dataTable = pd.read_table('signatures.tsv').rename(columns={'Unnamed: 0': 'id'})
-indexTable = dataTable.id
-
-
-dataTable = pd.read_csv('signatures.tsv', sep='\t', index_col='Unnamed: 0')
-# dataTable.loc[dataTable.id == 'NSCLC1352']
+idList = dataTable['id'].to_list()
 
 app = FastAPI()
 
-@app.post('/book')
-def create_book(item: Book):
-    return item
+origins = ["*"]
 
-@app.get('/book')
-def get_book(q: List[str] = Query(..., description="Search book")):
-    return q
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-@app.get('/getIDs')
-def get_ids():
-    return dataTable.loc[dataTable.id == 'NSCLC1352'].T
+
+@app.get("/")
+async def root():
+    return {"API is ready"}
+
+
+@app.get('/getAllData')
+def get_all_data():
+    return dataTable.T
+
+
+@app.get('/getIDList')
+def get_id_list():
+    return idList
+
+
+@app.get('/getData/{item_id}')
+def get_data(item_id: str):
+    idList.index(item_id)
+    index = idList.index(item_id)
+    return dataTable.iloc[index]
 
