@@ -1,8 +1,10 @@
 from fastapi import FastAPI
+
 from fastapi.middleware.cors import CORSMiddleware
+
 import pandas as pd
 
-dataTable = pd.read_table('signatures.tsv').rename(columns={'Unnamed: 0': 'id'})
+dataTable = pd.read_table('/app/signatures.tsv').rename(columns={'Unnamed: 0': 'id'})
 idList = dataTable['id'].to_list()
 
 app = FastAPI()
