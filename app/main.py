@@ -38,4 +38,3 @@ def get_data(item_id: str):
     idList.index(item_id)
     index = idList.index(item_id)
     return dataTable.iloc[index]
-
